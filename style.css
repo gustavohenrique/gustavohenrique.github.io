@@ -1,7 +1,8 @@
 body{
-    font-family:'Open Sans', 'sans-serif';
-    font-size:15px;
+    font-family: 'Roboto', 'Open Sans', 'sans-serif';
+    font-size:1.6rem;
     line-height: 25px;
+    letter-spacing:0.2px;
     font-weight:400;
     color:#303030;
 }
@@ -85,7 +86,6 @@ header{
     color:#767777;
     font-size: 18px;
     text-transform: uppercase;
-    font-family: 'Open Sans Condensed';
     padding: 5px;
     margin-right:12px; 
 
@@ -174,7 +174,7 @@ header{
 }
 
 #contact-list li a{
-    font-family: 'Open Sans Condensed';
+    font-family: 'Roboto';
     font-size: 30px;
 }
 #contact-close{
@@ -203,15 +203,23 @@ header{
                     
 #main-contents{
     background-color: #eaebec;
-    padding-top:100px; 
 }
 .page-contents{
-    padding: 100px;
+    padding: 100px 100px 60px 100px;
     background: #f5f5f5;
+    margin-top: 50px;
     margin-bottom: 50px;
 }
 .page-contents .first-elem{
     margin-top: 0;
+}
+h1.title {
+    font-size: 3.9rem;
+    word-spacing: 4px;
+    letter-spacing: 0.2px;
+    margin-top: 0px;
+    margin-bottom: 50px;
+    text-transform: uppercase;
 }
 .page-title{
     margin: 50px 0 40px 0;
@@ -228,6 +236,26 @@ header{
 .page-contents img{
     max-width: 100%;
 }
+
+p.text, .repository > .description {
+    font-size: 2rem;
+    line-height: 30px;
+    word-spacing: 2px;
+    letter-spacing: 0.02px;
+}
+
+.repository {
+    margin-bottom: 20px;
+}
+
+.repository > .name {
+    font-size: 2.5rem;
+}
+
+.repository > .language {
+    color: #808080;
+}
+
 
 /*blog 
  **************************************************/
@@ -350,8 +378,6 @@ header{
     padding-top: 0;
 }
 
-
-
 #blog-pagination{
     width: 100%;
     padding: 20px;
@@ -401,7 +427,6 @@ header{
     padding: 0;
     list-style: none;
 }
-
 
 .post-socials li{
     display: inline-block;
@@ -537,7 +562,7 @@ margin-bottom: 10px;
 }
 #social-icons li a{
     color:#c1c1c1;
-    font-size: 18px;
+    font-size: 3rem;
     padding: 5px;
 
     -webkit-transition: all .25s ease;
@@ -642,14 +667,24 @@ blockquote{
 
 @media screen and (max-width: 768px) {
     .post-item,.page-contents{
-        padding: 50px;
-        padding-bottom: 75px;
+        padding: 50px 50px 20px 50px;
     }
 }
 
 @media screen and (max-width: 480px) {
     .post-item,.page-contents{
-        padding: 30px;
-        padding-bottom: 75px;
+        padding: 30px 30px 20px 30px;
+    }
+
+    h1.title {
+        font-size: 3.5rem;
+    }
+
+    p.text, .repository > .description {
+        font-size: 1.8rem;
+    }
+
+    .repository > .name {
+        font-size: 2rem;
     }
 }
