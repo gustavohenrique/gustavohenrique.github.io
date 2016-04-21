@@ -53,6 +53,9 @@ var quotes = [
 }, {
     author: 'Nathan Myhrvold',
 	message: 'Software sucks because users demand it to.'
+}, {
+	author: 'DevOps Borat',
+	message: 'To make error is human. To propagate error to all server in automatic way is devops.'
 }];
 
 function getQuotes () {
