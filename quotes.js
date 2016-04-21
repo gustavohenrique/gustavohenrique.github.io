@@ -50,6 +50,9 @@ var quotes = [
 }, {
     author: 'Douglas Crockford',
     message: 'In Javascript, undefined and NaN are not constants. They are global variables, and you can change their values. That should not be possible, and yet it is. Don’t do it.'
+}, {
+    author: 'Nathan Myhrvold',
+	message: 'Software sucks because users demand it to.'
 }];
 
 function getQuotes () {
