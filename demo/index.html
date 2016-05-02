@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en" ng-app="MainApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cyza Test</title>
+    <meta name="description" content="">
+    <meta name="author" content="Gustavo Henrique">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+</head>
+<body>
+    
+    <div ng-controller="MainCtrl as vm" class="container" style="padding-top: 20px">
+        <div class="row">
+            <div class="col-md-7">
+
+				<div id="upload">
+					<div ng-hide="vm.files.length > 0" ngf-drop="vm.upload($files)" ngf-select ng-model="vm.files" ngf-drag-over-class="'dragover'" ngf-multiple="true" ngf-allow-dir="true" class="upload">
+						<div>
+							<button type="button" class="btn btn-primary btn-circle">+</button>
+						</div>
+						<div>Upload images and video (1)</div>
+					</div>
+					<div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+					<div ng-show="vm.files.length > 0" class="upload">
+						<div>File: {{ vm.filename }}</div>
+					</div>
+				</div>
+
+				<div id="carousel" style="margin-top: 20px; margin-bottom: 20px">
+					<uib-carousel active="0" interval="5000" no-wrap="true">
+						<uib-slide ng-repeat="slide in vm.slides track by slide.id" index="slide.id">
+							<img ng-src="{{ slide.image }}" class="carousel">
+							<img ng-src="{{ vm.slides[ vm.getSecondIndex($index + 1) ].image }}" class="carousel">
+							<img ng-src="{{ vm.slides[ vm.getSecondIndex($index + 2) ].image }}" class="carousel">
+							<img ng-src="{{ vm.slides[ vm.getSecondIndex($index + 3) ].image }}" class="carousel">
+							<img ng-src="{{ vm.slides[ vm.getSecondIndex($index + 4) ].image }}" class="carousel">
+						</uib-slide>
+					</uib-carousel>
+				</div>
+
+                <div id="description">
+                    <h3>Description</h3>
+                    <textarea class="form-control" rows="10" placeholder="Enter description here"></textarea>
+                </div>
+
+                <div id="policies">
+                    <h3>Policies 
+                        <span uib-tooltip="Sorry but I cannot help you :(" class="glyphicon glyphicon-question-sign" style="cursor: pointer;" aria-hidden="true"></span>
+                    </h3>
+                    <div>
+                        <div class="policies field">
+                            <input type="email" class="form-control" placeholder="Enter Brief/Main Policy/Comment 1 (if any)">
+                        </div>
+                        <div class="policies field">
+                            <input type="email" class="form-control" placeholder="Enter Brief/Main Policy/Comment 1 (if any)">
+                        </div>
+                        <div class="policies field">
+                            <input type="email" class="form-control" placeholder="Enter Brief/Main Policy/Comment 1 (if any)">
+                        </div>
+                        <div>
+                            <textarea class="form-control" rows="10" placeholder="Enter other Policies/Comments"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+          
+
+            <div class="col-md-5">
+
+                <div id="categories">
+                    <div class="form-group">
+                        <h3>Title</h3>
+                        <input type="text" class="form-control" placeholder="Enter Title for Service">
+                    </div>
+                    <div class="form-group">
+                        <h3>Category</h3>
+                        <select ng-model="category" ng-change="vm.loadSubcategoriesFor(this.category, vm)" class="form-control">
+                            <option value="">Select Main Category for Listing</option>
+                            <option value="{{ category.id }}" ng-repeat="category in vm.categories">{{ category.name }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group" ng-show="vm.subcategories.length > 0">
+                        <h3>Subcategory & Type</h3>
+                        <select ng-model="subcategory" ng-change="vm.loadTypesFor(this.subcategory, vm)" class="form-control">
+                            <option value="">Select a Subcategory for Listing</option>
+                            <option value="{{ subcategory.id }}" ng-repeat="subcategory in vm.subcategories">{{ subcategory.name }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group" ng-show="vm.types.length > 0">
+                        <h3>Select Types of Services Included</h3>
+                        <div class="types">
+                            <div class="checkboxes" ng-repeat="type in vm.types">
+                                <label>
+                                    <input type="checkbox" name="type" value="{{ type }}">{{ type }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="price">
+                    <h3>Price
+                        <span uib-tooltip="Sorry but I cannot help you :(" class="glyphicon glyphicon-question-sign" style="cursor: pointer;" aria-hidden="true"></span>
+                    </h3>
+                    <div>
+                        <uib-accordion close-others="oneAtATime">
+                            <uib-accordion-group is-open="true">
+                                <uib-accordion-heading>
+                                    <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !status.open}"></i>
+                                    Total Amount
+                                </uib-accordion-heading>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="$ Enter Amount"></input>
+                                </div>
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox"> Happy Hour Pricing
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" style="width: 154px" placeholder="$ Enter Amount"></input>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary">
+                                            <i class="glyphicon glyphicon-pencil"></i>
+                                            Happy hours
+                                        </button>
+                                    </div>
+                                    <div class="amount">
+                                        <i class="pull-right glyphicon glyphicon-remove"></i>
+                                        $ 1,200.00
+                                    </div>
+                                </div>
+                            </uib-accordion-group>
+                        </uib-accordion>
+
+                        <uib-accordion close-others="oneAtATime">
+                            <uib-accordion-group is-open="false">
+                                <uib-accordion-heading>
+                                    <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                                    Appointment-Based Listing
+                                </uib-accordion-heading>
+                            </uib-accordion-group>
+                        </uib-accordion>
+
+                    </div>
+                </div>
+
+                <div id="service">
+                    <h3>How Can Customers Receive this Service? (add all that apply)
+                        <span uib-tooltip="Sorry but I cannot help you :(" class="glyphicon glyphicon-question-sign" style="cursor: pointer;" aria-hidden="true"></span>
+                    </h3>
+                    <div class="panel panel-default panel-body">
+                        <div class="form-inline">
+                            <div>Select Service Delivery/Receiving options:</div>
+                            <div class="form-group">
+                                <select ng-model="vm.service" class="form-control" style="width: 270px">
+                                    <option value="">Select & Add Options</option>
+									<option value="{{ service }}" ng-repeat="service in vm.servicesAvailable">{{ service }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" ng-model="vm.cost" class="form-control" style="width: 150px" placeholder="$ Enter Cost"></input>
+                            </div>
+                        </div>
+                        <div style="padding-top:10px; padding-bottom: 10px">
+                            <span>Turn-around time for the selected option from time ordered: (turn-around time is based on business/operation hours)</span>
+                            <span uib-tooltip="Sorry but I cannot help you :(" class="glyphicon glyphicon-question-sign" style="cursor: pointer;" aria-hidden="true"></span>
+                        </div>
+                        <uib-accordion close-others="oneAtATime">
+                            <uib-accordion-group is-open="true">
+                                <uib-accordion-heading>
+                                    <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !status.open}"></i>
+                                    By Hours/Minutes
+                                </uib-accordion-heading>
+                                <div class="form-inline">
+                                    <div class="form-group">
+                                        <select ng-model="vm.hour" class="form-control">
+                                            <option value="">0-24 hours</option>
+											<option value="{{ hour }}h" ng-repeat="hour in vm.hours">{{ hour }}h</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <span> and </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <select ng-model="vm.minute" class="form-control">
+                                            <option value="">0-60 Minutes</option>
+											<option value="{{ minute }}min" ng-repeat="minute in vm.minutes">{{ minute }}min</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="service hour">
+                                    <button ng-click="vm.addService(vm)" class="btn " ng-class="vm.hasService(vm) ? 'btn-primary' : 'disabled'">+ Add</button>
+                                </div>
+                                <div class="service">
+                                    <div class="details" ng-repeat="service in vm.services">
+										<span class="desc">{{ service.desc }}</span>
+										<span class="price">{{ service.cost }}</span>
+										<span class="time">{{ service.time }}</span>
+                                        <i ng-click="vm.removeService($index)" class="pull-right glyphicon glyphicon-remove"></i>
+                                    </div>
+                                </div>
+
+                            </uib-accordion-group>
+                        </uib-accordion>
+                        <uib-accordion close-others="oneAtATime">
+                            <uib-accordion-group is-open="false">
+                                <uib-accordion-heading>
+                                    <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                                    By Days
+                                </uib-accordion-heading>
+                            </uib-accordion-group>
+                        </uib-accordion>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row last">
+            <div class="col-md-2"></div>
+            <div class="col-md-8" style="text-align: center">
+                <button class="btn btn-lg">PREVIEW</button>
+                <button class="btn btn-lg">SAVE DRAFT</button>
+                <button class="btn btn-lg btn-primary">POST</button>
+            </div>
+            <div class="col-md-2" style="text-align: center;">
+                <button class="btn btn-lg">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/angular-animate.js"></script>
+    <script src="assets/js/angular-touch.js"></script>
+    <script src="assets/js/ui-bootstrap-tpls.min.js"></script>
+
+    <script src="assets/js/upload/ng-file-upload-shim.js"></script>
+    <script src="assets/js/upload/ng-file-upload.js"></script>
+
+    <script src="app/app.js"></script>
+    <script src="app/controller.js"></script>
+
+</body>
+</html>
