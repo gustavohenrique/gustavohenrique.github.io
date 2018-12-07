@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parceiros Marketplace</title>
+
+<style type="text/css">
+* {
+  font-family: Arial, 'sans-serif';
+  font-size: 1.2rem;
+}
+
+button {
+  padding: 10px;
+}
+
+th {
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: left;
+}
+
+table {
+  width: 50%;
+}
+
+td {
+  padding-top: 5px;
+}
+
+.block {
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.category {
+  font-size: 2rem;
+  font-weight: bold;
+  padding-top: 30px;
+}
+
+td.products {
+  color: gray;
+}
+
+.header {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.header > div {
+  font-weight: bold;
+  color: black;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  text-align: center;
+  left: 0;
+  z-index: 999;
+  background-color: rgba(0,0,0,0.3);
+}
+
+.hide {
+  display: none;
+}
+
+.loading > .text {
+  padding-top: 100px;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+</style>
+</head>
+
+<body>
+<div class="loading hide">
+  <div class="text"></div>
+</div>
+
+<div class="buttons"></div>
+<div class="result"></div>
+
+
+<script type="text/javascript">
+var categories = [
+  {"id":"226855","name":"Automotivo"},
+  {"id":"227109","name":"Brinquedos"},
+  {"id":"229187","name":"Celulares e Smartphones"},
+  {"id":"228190","name":"Informática"},
+  {"id":"227707","name":"TV e Home Theater"},
+  {"id":"227644","name":"Eletrodomésticos"},
+  {"id":"227763","name":"Eletroportáteis"},
+  {"id":"228740","name":"Móveis"},
+  {"id":"358352","name":"Moda"},
+  {"id":"228926","name":"Beleza e Perfumaria"},
+  {"id":"226940","name":"Bebês"},
+  {"id":"228098","name":"Informática e Acessórios"},
+  {"id":"256408","name":"Áudio"},
+  {"id":"317728","name":"Ar-condicionado e Aquecedores"},
+  {"id":"364673","name":"Decoração"},
+  {"id":"226762","name":"Games"},
+  {"id":"228310","name":"Livros"},
+  {"id":"227609","name":"Filmes e Séries"},
+  {"id":"421773","name":"Agro, Indústria e Comércio"},
+  {"id":"336268","name":"Suplementos e Vitaminas"},
+  {"id":"229073","name":"Sinalização e Segurança"},
+  {"id":"227014","name":"Saúde"},
+  {"id":"229017","name":"Relógios"},
+  {"id":"228641","name":"Malas, Mochilas e Acessórios"},
+  {"id":"228804","name":"Papelaria"},
+  {"id":"227369","name":"Música"},
+  {"id":"228975","name":"Pet Shop"},
+  {"id":"228255","name":"Instrumentos Musicais"},
+  {"id":"227559","name":"Câmeras e Filmadoras"},
+  {"id":"451793","name":"Casa e Construção"},
+  {"id":"227821","name":"Esporte e Lazer"},
+  {"id":"227296","name":"Cama, Mesa e Banho"},
+  {"id":"484758","name":"Artigos de Festas"},
+  {"id":"485893","name":"Artesanato"},
+  {"id":"226795","name":"Alimentos e Bebidas"},
+  {"id":"229231","name":"Utilidades Domésticas"}
+];
+
+// var a = document.querySelector('a[type=category]'); JSON.stringify({'id': a.id, 'name': a.name})
+
+var buttons = document.querySelector('.buttons');
+var result = document.querySelector('.result');
+var loading = document.querySelector('.loading');
+var loadingText = document.querySelector('.loading > .text');
+
+function getAllPartners() {
+  categories.forEach(function(category) {
+    _showLoading(category)
+    _getPartnersBy(category).then(function(data) {
+      _hideLoading();
+      _writeOnScreen(category, data);
+    })
+    .catch(function(error) {
+      _hideLoading();
+      alert(error.message);
+    });
+
+  });
+}
+
+function onload() {
+  categories.forEach(function(category) {
+    var btn = document.createElement('button');
+    btn.innerHTML = category.name;
+    btn.classList.add('block');
+    btn.addEventListener('click', function() {
+      _clearContent();
+      _showLoading(category)
+      _getPartnersBy(category).then(function(data) {
+        _hideLoading();
+        _writeOnScreen(category, data);
+      })
+      .catch(function(error) {
+        _hideLoading();
+        alert(error.message);
+      });
+    });
+    buttons.appendChild(btn);
+  });
+}
+
+function _clearContent() {
+  while (result.firstChild) {
+    result.removeChild(result.firstChild);
+  }
+}
+
+function _getURL(categoryId) {
+  var url = 'https://mystique-v2-americanas.b2w.io/search?source=omega&filter=%7B%22id%22%3A%22category.id%22%2C%22value%22%3A%22${categoryId}%22%2C%22fixed%22%3Atrue%7D&limit=0&aggregation={%22id%22:%22variation.sellerName%22,%22limit%22:0}&aggregation={%22disable%22:true}'
+  return url.replace('${categoryId}', categoryId);
+}
+
+function _getPartnersBy(category) {
+  return new Promise(function(resolve, reject) {
+    var client = new XMLHttpRequest();
+    var url =  _getURL(category.id);
+    console.log('URL', url);
+    client.open('GET', url);
+    client.onreadystatechange = function() {
+      if (client.readyState == XMLHttpRequest.DONE) {
+        if (client.status == 200) {
+          resolve(JSON.parse(client.responseText));
+        }
+        else {
+          reject({message: 'Eita, deu erro ' + client.statusText});
+        }
+      }
+    }
+    client.send();
+  });
+}
+
+function _writeOnScreen(category, data) {
+  var options = data.aggregations[0].options;
+
+  var divCategory = document.createElement('div');
+  divCategory.innerHTML = category.name + ' (' + options.length + ' empresas)';
+  divCategory.classList.add('category');
+  result.appendChild(divCategory);
+
+  var name = document.createElement('th');
+  name.classList.add('name');
+  name.innerHTML = 'Empresa';
+
+  var products = document.createElement('th');
+  products.classList.add('products');
+  products.innerHTML = 'Produtos';
+
+  var thead = document.createElement('thead');
+  thead.appendChild(name);
+  thead.appendChild(products);
+  
+  var table = document.createElement('table');
+  table.appendChild(thead);
+
+  var divBody = document.createElement('div');
+  divBody.classList.add('body');
+
+  var tbody = document.createElement('tbody');
+
+  options.forEach(function(item) {
+    //console.log(item.title, item.count);
+    var td1 = document.createElement('td');
+    td1.classList.add('name');
+    td1.innerHTML = item.title;
+
+    var td2 = document.createElement('td');
+    td2.classList.add('products');
+    td2.innerHTML = item.count;
+
+    var tr = document.createElement('tr');
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+
+  result.appendChild(table);
+}
+
+function _showLoading(category) {
+  loading.classList.remove('hide');
+  loadingText.innerHTML = 'Carregando ' + category.name + '... Aguarde';
+}
+
+function _hideLoading() {
+  loading.classList.add('hide');
+}
+
+document.addEventListener("DOMContentLoaded", onload);
+</script>
+</body>
+</html>
