@@ -1,0 +1,6 @@
+rm -rf ~/Documents/dotfiles 2>/dev/null
+mv ~/.config ~/oldconfig 2>/dev/null
+mkdir ~/Documents 2>/dev/null
+git clone --depth 1 https://gitlab.com/gustavohenrique/dotfiles.git ~/Documents/dotfiles
+cd ~/Documents/dotfiles
+sh ./install.sh
